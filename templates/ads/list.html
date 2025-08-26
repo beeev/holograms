@@ -1,0 +1,13 @@
+<!doctype html>
+<title>Ads</title>
+<h1>Recent Ads</h1>
+<ul>
+  {% for ad in ads %}
+    <li>
+      <a href="{% url 'ad_detail' ad.pk %}">{{ ad.title }}</a>
+      — {{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}
+    </li>
+  {% empty %}
+    <li>No ads yet.</li>
+  {% endfor %}
+</ul>
