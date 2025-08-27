@@ -44,6 +44,7 @@ def review_submit(request, pk: int):
     else:
         messages.error(request, "Please fix the errors in your review.")
     return redirect("ad_detail", pk=ad.pk)
+
 @login_required
 def profile_edit(request):
     profile = request.user.profile  # created by signal

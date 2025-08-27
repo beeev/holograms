@@ -1,53 +1,64 @@
 {% extends "base.html" %}
-{% block title %}{{ ad.title }} — {{ ad.brand.name }}{% endblock %}
 {% block content %}
 <h1>{{ ad.title }}</h1>
-<p>{{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}{% if ad.agency %} — Agency: {{ ad.agency.name }}{% endif %}</p>
-<p>Rating: {% if ad.num_reviews %}★ {{ ad.avg_rating|floatformat:1 }} ({{ ad.num_reviews }}){% else %}No reviews yet{% endif %}</p>
+<p class="meta">
+  <a href="{{ ad.brand.get_absolute_url }}">{{ ad.brand.name }}</a>
+  {% if ad.year %} • {{ ad.year }}{% endif %}
+  {% if ad.agency %} • <a href="{{ ad.agency.get_absolute_url }}">{{ ad.agency.name }}</a>{% endif %}
+</p>
 
 {% if ad.youtube_id %}
-  <div class="video-16x9">
+  <div class="video-16x9" style="margin:14px 0 18px;">
     <iframe
       src="https://www.youtube-nocookie.com/embed/{{ ad.youtube_id }}?rel=0"
       title="{{ ad.title|escape }}"
-      frameborder="0"
+      loading="lazy"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
       referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
+      allowfullscreen></iframe>
   </div>
-{% else %}
-  <p><em>No video ID found.</em></p>
 {% endif %}
-<p>Tags:
-{% for t in ad.tags_m2m.all %}
-  <a href="{% url 'search' %}?tag={{ t.slug }}">{{ t.name }}</a>
-{% empty %}—{% endfor %}
-</p>
 
-<h2>Reviews</h2>
-{% for r in ad.reviews.all %}
-  <article>
-    <strong><a href="{% url 'profile_public' r.user.username %}">{{ r.user.username }}</a></strong>
-    <p>{{ r.body|linebreaksbr }}</p>
-    <small>{{ r.created_at }}</small>
-  </article>
-  <hr>
-{% empty %}
-  <p>No reviews yet.</p>
-{% endfor %}
+<div class="badges">
+  {% if ad.duration_sec %}<span class="badge">{{ ad.duration_sec }}s</span>{% endif %}
+  {% if ad.reviews.all.count %}<span class="badge">★ {{ ad.reviews.all.aggregate|default_if_none:"" }}</span>{% endif %}
+</div>
 
+{% if ad.tags_m2m.all %}
+  <div class="chips">
+    {% for t in ad.tags_m2m.all %}
+      <a class="chip" href="{% url 'search' %}?tag={{ t.slug }}">{{ t.name }}</a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if ad.credits.all %}
+  <h2 style="margin-top:22px;">Credits</h2>
+  <ul>
+    {% for c in ad.credits.all %}
+      <li>{{ c.get_role_display }} — {{ c.person.name }}{% if c.company %} ({{ c.company.name }}){% endif %}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<h2 style="margin-top:22px;">Reviews</h2>
 {% if user.is_authenticated %}
-  <h3>{% if user_review %}Edit your review{% else %}Write a review{% endif %}</h3>
   <form method="post" action="{% url 'review_submit' ad.pk %}">
     {% csrf_token %}
-    <label>Rating (0–5): {{ form.rating }}</label><br>
-    <label>Thoughts:<br>{{ form.body }}</label><br>
-    <button type="submit">{% if user_review %}Update{% else %}Submit{% endif %}</button>
+    <label>Rating (0–5)</label>
+    <input type="number" name="rating" min="0" max="5" step="1" style="width:70px">
+    <br>
+    <textarea name="body" rows="3" style="width:100%; margin-top:8px;" placeholder="What did you think?"></textarea>
+    <button class="btn" type="submit" style="margin-top:8px;">Post review</button>
   </form>
 {% else %}
-  <p><a href="/accounts/login/?next={{ request.path }}">Log in</a> to review.</p>
+  <p class="meta">Log in to review.</p>
 {% endif %}
-
-<p><a href="{% url 'ad_list' %}">← Back to list</a></p>
+<ul>
+  {% for r in ad.reviews.all %}
+    <li><strong>★ {{ r.rating }}</strong> — {{ r.user.username }} <span class="meta">· {{ r.created_at|date:"Y-m-d" }}</span><br>{{ r.body|linebreaksbr }}</li>
+  {% empty %}
+    <li class="meta">No reviews yet.</li>
+  {% endfor %}
+</ul>
 {% endblock %}

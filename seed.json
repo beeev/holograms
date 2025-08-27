@@ -1,0 +1,528 @@
+[
+{
+  "model": "core.brand",
+  "pk": 1,
+  "fields": {
+    "name": "Guiness",
+    "website": "https://guinness.com",
+    "slug": "guiness",
+    "created_at": "2025-08-27T12:36:39.266Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 2,
+  "fields": {
+    "name": "Volvo Trucks",
+    "website": "",
+    "slug": "volvo-trucks",
+    "created_at": "2025-08-27T13:18:25.734Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 3,
+  "fields": {
+    "name": "Guinness",
+    "website": "",
+    "slug": "guinness",
+    "created_at": "2025-08-27T13:18:25.735Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 4,
+  "fields": {
+    "name": "Cadbury",
+    "website": "",
+    "slug": "cadbury",
+    "created_at": "2025-08-27T16:12:22.697Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 5,
+  "fields": {
+    "name": "Telstra",
+    "website": "",
+    "slug": "telstra",
+    "created_at": "2025-08-27T16:12:22.700Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 6,
+  "fields": {
+    "name": "Dove",
+    "website": "",
+    "slug": "dove",
+    "created_at": "2025-08-27T16:12:22.705Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 7,
+  "fields": {
+    "name": "Jammie Dodgers",
+    "website": "",
+    "slug": "jammie-dodgers",
+    "created_at": "2025-08-27T16:12:22.707Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 8,
+  "fields": {
+    "name": "British Airways",
+    "website": "",
+    "slug": "british-airways",
+    "created_at": "2025-08-27T16:12:22.709Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 9,
+  "fields": {
+    "name": "Pot Noodle",
+    "website": "",
+    "slug": "pot-noodle",
+    "created_at": "2025-08-27T16:12:22.714Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 10,
+  "fields": {
+    "name": "Barrs",
+    "website": "",
+    "slug": "barrs",
+    "created_at": "2025-08-27T16:12:22.717Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 11,
+  "fields": {
+    "name": "Adam&EveDDB",
+    "website": "",
+    "slug": "adameveddb",
+    "created_at": "2025-08-27T16:12:22.720Z"
+  }
+},
+{
+  "model": "core.brand",
+  "pk": 12,
+  "fields": {
+    "name": "Santander",
+    "website": "",
+    "slug": "santander",
+    "created_at": "2025-08-27T16:12:22.723Z"
+  }
+},
+{
+  "model": "core.agency",
+  "pk": 1,
+  "fields": {
+    "name": "AMV BBDO",
+    "website": "https://bbdo.com",
+    "country": "Global",
+    "slug": "amv-bbdo",
+    "created_at": "2025-08-27T12:36:59.905Z"
+  }
+},
+{
+  "model": "core.agency",
+  "pk": 2,
+  "fields": {
+    "name": "Forsman & Bodenfors",
+    "website": "",
+    "country": "",
+    "slug": "forsman-bodenfors",
+    "created_at": "2025-08-27T13:18:25.734Z"
+  }
+},
+{
+  "model": "core.agency",
+  "pk": 3,
+  "fields": {
+    "name": "VCCP",
+    "website": "",
+    "country": "",
+    "slug": "vccp",
+    "created_at": "2025-08-27T16:12:22.698Z"
+  }
+},
+{
+  "model": "core.agency",
+  "pk": 4,
+  "fields": {
+    "name": "TBWA",
+    "website": "",
+    "country": "",
+    "slug": "tbwa",
+    "created_at": "2025-08-27T16:12:22.701Z"
+  }
+},
+{
+  "model": "core.agency",
+  "pk": 5,
+  "fields": {
+    "name": "Uncommon",
+    "website": "",
+    "country": "",
+    "slug": "uncommon",
+    "created_at": "2025-08-27T16:12:22.710Z"
+  }
+},
+{
+  "model": "core.agency",
+  "pk": 6,
+  "fields": {
+    "name": "Adam&EveDDB",
+    "website": "",
+    "country": "",
+    "slug": "adameveddb",
+    "created_at": "2025-08-27T16:12:22.715Z"
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 2,
+  "fields": {
+    "title": "The Epic Split",
+    "brand": 2,
+    "agency": 2,
+    "year": 2013,
+    "youtube_url": "https://www.youtube.com/watch?v=M7FIvfx5J10",
+    "youtube_id": "M7FIvfx5J10",
+    "duration_sec": 60,
+    "tags": "stunt",
+    "created_at": "2025-08-27T13:18:25.735Z",
+    "tags_m2m": [
+      1
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 3,
+  "fields": {
+    "title": "Guinness Surfer",
+    "brand": 3,
+    "agency": 1,
+    "year": 1999,
+    "youtube_url": "https://www.youtube.com/watch?v=zcdDg30VBgo",
+    "youtube_id": "zcdDg30VBgo",
+    "duration_sec": 90,
+    "tags": "classic",
+    "created_at": "2025-08-27T13:18:25.736Z",
+    "tags_m2m": [
+      2
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 7,
+  "fields": {
+    "title": "The Quarrel",
+    "brand": 3,
+    "agency": null,
+    "year": null,
+    "youtube_url": "https://www.youtube.com/watch?v=mSh1NNp0q5Q",
+    "youtube_id": "mSh1NNp0q5Q",
+    "duration_sec": null,
+    "tags": "Beer",
+    "created_at": "2025-08-27T16:12:22.695Z",
+    "tags_m2m": [
+      3
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 8,
+  "fields": {
+    "title": "Garage",
+    "brand": 4,
+    "agency": 3,
+    "year": 2023,
+    "youtube_url": "https://www.youtube.com/watch?v=JHEJfRnWyBM",
+    "youtube_id": "JHEJfRnWyBM",
+    "duration_sec": null,
+    "tags": "FMCG",
+    "created_at": "2025-08-27T16:12:22.699Z",
+    "tags_m2m": [
+      4
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 9,
+  "fields": {
+    "title": "Better on a Better Mobile Network",
+    "brand": 5,
+    "agency": 4,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=7FCJNnSAnK8",
+    "youtube_id": "7FCJNnSAnK8",
+    "duration_sec": null,
+    "tags": "Services",
+    "created_at": "2025-08-27T16:12:22.702Z",
+    "tags_m2m": [
+      5
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 10,
+  "fields": {
+    "title": "Mum’s Birthday",
+    "brand": 4,
+    "agency": 3,
+    "year": null,
+    "youtube_url": "https://www.youtube.com/watch?v=TfMt3HN8tuY",
+    "youtube_id": "TfMt3HN8tuY",
+    "duration_sec": null,
+    "tags": "FMCG",
+    "created_at": "2025-08-27T16:12:22.704Z",
+    "tags_m2m": [
+      4
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 11,
+  "fields": {
+    "title": "The Code",
+    "brand": 6,
+    "agency": null,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=sD-R2OzcleQ",
+    "youtube_id": "sD-R2OzcleQ",
+    "duration_sec": null,
+    "tags": "FMCQ",
+    "created_at": "2025-08-27T16:12:22.706Z",
+    "tags_m2m": [
+      6
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 12,
+  "fields": {
+    "title": "Jam Packed With Mischief",
+    "brand": 7,
+    "agency": null,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=eUmqIodXCvM",
+    "youtube_id": "eUmqIodXCvM",
+    "duration_sec": null,
+    "tags": "FMCQ",
+    "created_at": "2025-08-27T16:12:22.708Z",
+    "tags_m2m": [
+      6
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 13,
+  "fields": {
+    "title": "May We Haveth One’s Attention",
+    "brand": 8,
+    "agency": 5,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=ssVe0FaBhUU",
+    "youtube_id": "ssVe0FaBhUU",
+    "duration_sec": null,
+    "tags": "Travel",
+    "created_at": "2025-08-27T16:12:22.710Z",
+    "tags_m2m": [
+      7
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 14,
+  "fields": {
+    "title": "Yours for 200 years",
+    "brand": 4,
+    "agency": 3,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=2eO8VNjYqRM",
+    "youtube_id": "2eO8VNjYqRM",
+    "duration_sec": null,
+    "tags": "Food",
+    "created_at": "2025-08-27T16:12:22.712Z",
+    "tags_m2m": [
+      8
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 15,
+  "fields": {
+    "title": "Nothing Satisfies like a Pot Noodle",
+    "brand": 9,
+    "agency": 6,
+    "year": null,
+    "youtube_url": "https://www.youtube.com/watch?v=sBw6VHyPo0Q",
+    "youtube_id": "sBw6VHyPo0Q",
+    "duration_sec": null,
+    "tags": "Food",
+    "created_at": "2025-08-27T16:12:22.715Z",
+    "tags_m2m": [
+      8
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 16,
+  "fields": {
+    "title": "Mannshaft",
+    "brand": 10,
+    "agency": null,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=H4JEFd5CZlQ",
+    "youtube_id": "H4JEFd5CZlQ",
+    "duration_sec": null,
+    "tags": "Beverage",
+    "created_at": "2025-08-27T16:12:22.717Z",
+    "tags_m2m": [
+      9
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 17,
+  "fields": {
+    "title": "Disney",
+    "brand": 11,
+    "agency": null,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=_1nez6_1TXY",
+    "youtube_id": "_1nez6_1TXY",
+    "duration_sec": null,
+    "tags": "Christmas",
+    "created_at": "2025-08-27T16:12:22.721Z",
+    "tags_m2m": [
+      10
+    ]
+  }
+},
+{
+  "model": "core.ad",
+  "pk": 18,
+  "fields": {
+    "title": "Banking with the enemy",
+    "brand": 12,
+    "agency": null,
+    "year": 2024,
+    "youtube_url": "https://www.youtube.com/watch?v=fdLFIkbaRgw",
+    "youtube_id": "fdLFIkbaRgw",
+    "duration_sec": null,
+    "tags": "Finance",
+    "created_at": "2025-08-27T16:12:22.723Z",
+    "tags_m2m": [
+      11
+    ]
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 1,
+  "fields": {
+    "name": "stunt",
+    "slug": "stunt"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 2,
+  "fields": {
+    "name": "classic",
+    "slug": "classic"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 3,
+  "fields": {
+    "name": "Beer",
+    "slug": "beer"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 4,
+  "fields": {
+    "name": "FMCG",
+    "slug": "fmcg"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 5,
+  "fields": {
+    "name": "Services",
+    "slug": "services"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 6,
+  "fields": {
+    "name": "FMCQ",
+    "slug": "fmcq"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 7,
+  "fields": {
+    "name": "Travel",
+    "slug": "travel"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 8,
+  "fields": {
+    "name": "Food",
+    "slug": "food"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 9,
+  "fields": {
+    "name": "Beverage",
+    "slug": "beverage"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 10,
+  "fields": {
+    "name": "Christmas",
+    "slug": "christmas"
+  }
+},
+{
+  "model": "core.tag",
+  "pk": 11,
+  "fields": {
+    "name": "Finance",
+    "slug": "finance"
+  }
+}
+]

@@ -1,34 +1,28 @@
 {% extends "base.html" %}
-{% block title %}{{ brand.name }} — Holograms{% endblock %}
-
 {% block content %}
 <h1>{{ brand.name }}</h1>
-<p>
-  {{ brand.num_ads|default:0 }} ads
-  {% if brand.avg_rating %} • ★ {{ brand.avg_rating|floatformat:1 }} avg{% endif %}
-  {% if brand.website %} • <a href="{{ brand.website }}" target="_blank" rel="noopener">Website</a>{% endif %}
+<p class="meta">
+  {{ brand.num_ads|default:0 }} ads{% if brand.avg_rating %} • ★ {{ brand.avg_rating|floatformat:1 }} avg{% endif %}
+  {% if brand.website %} • <a href="{{ brand.website }}" target="_blank" rel="noopener">Website ↗</a>{% endif %}
 </p>
-{% if brand.website %}<p><a href="{{ brand.website }}" target="_blank" rel="noopener">Website</a></p>{% endif %}
-<hr>
-<h2>Ads</h2>
-<ul>
+
+<h2 style="margin-top:18px;">Ads</h2>
+<ul class="grid auto" style="list-style:none; padding:0;">
   {% for ad in page.object_list %}
-    <li>
-      <a href="{% url 'ad_detail' ad.pk %}">{{ ad.title }}</a>
-      {% if ad.year %} ({{ ad.year }}){% endif %}
-      {% if ad.agency %} — {{ ad.agency.name }}{% endif %}
-      {% if ad.avg_rating %} — ★ {{ ad.avg_rating|floatformat:1 }}{% endif %}
+    <li class="card">
+      <a href="{% url 'ad_detail' ad.pk %}" style="text-decoration:none;">
+        <div class="thumb">
+          {% if ad.youtube_id %}<img src="https://i.ytimg.com/vi/{{ ad.youtube_id }}/hqdefault.jpg" alt="">{% endif %}
+        </div>
+        <h3>{{ ad.title }}</h3>
+      </a>
+      <div class="meta">
+        {% if ad.year %}{{ ad.year }}{% endif %}{% if ad.agency %} • {{ ad.agency.name }}{% endif %}
+      </div>
     </li>
   {% empty %}
-    <li>No ads for this brand yet.</li>
+    <p>No ads yet.</p>
   {% endfor %}
 </ul>
-
-{% if page.paginator.num_pages > 1 %}
-<nav>
-  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Prev</a>{% endif %}
-  Page {{ page.number }} of {{ page.paginator.num_pages }}
-  {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next →</a>{% endif %}
-</nav>
-{% endif %}
+{% include "partials/pagination.html" with page=page %}
 {% endblock %}

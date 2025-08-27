@@ -1,16 +1,43 @@
 {% extends "base.html" %}
-{% block title %}Ads — Holograms{% endblock %}
 {% block content %}
-<h1>Recent Ads</h1>
-<ul>
+<h1>Ads</h1>
+
+<form class="inline" method="get" action="{% url 'search' %}">
+  <input type="search" name="q" placeholder="Search ads, brands, agencies…" value="{{ request.GET.q }}">
+  <button class="btn" type="submit">Search</button>
+</form>
+
+<ul class="grid auto" style="list-style:none; padding:0; margin-top:16px;">
   {% for ad in ads %}
-    <li>
-      <a href="{% url 'ad_detail' ad.pk %}">{{ ad.title }}</a>
-      — {{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}
-      {% if ad.num_reviews %} — ★ {{ ad.avg_rating|floatformat:1 }} ({{ ad.num_reviews }}){% endif %}
+    <li class="card">
+      <a href="{% url 'ad_detail' ad.pk %}" style="text-decoration:none;">
+        <div class="thumb">
+          {% if ad.youtube_id %}
+            <img src="https://i.ytimg.com/vi/{{ ad.youtube_id }}/hqdefault.jpg" alt="">
+            <span class="play">▶ {{ ad.duration_sec|default:'—' }}s</span>
+          {% else %}
+            <div style="height:100%; background:#222"></div>
+          {% endif %}
+        </div>
+        <h3>{{ ad.title }}</h3>
+      </a>
+      <div class="meta">
+        {{ ad.brand.name }}
+        {% if ad.year %} • {{ ad.year }}{% endif %}
+        {% if ad.agency %} • {{ ad.agency.name }}{% endif %}
+      </div>
+      {% if ad.tags_m2m.all %}
+        <div class="chips">
+          {% for t in ad.tags_m2m.all|slice:":4" %}
+            <a class="chip" href="{% url 'search' %}?tag={{ t.slug }}">{{ t.name }}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
     </li>
   {% empty %}
-    <li>No ads yet.</li>
+    <p>No ads yet.</p>
   {% endfor %}
 </ul>
+
+{% include "partials/pagination.html" with page=page %}
 {% endblock %}

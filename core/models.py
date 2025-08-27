@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from datetime import date
 from .utils import extract_youtube_id
+from django.utils.text import slugify
 
 # ---------- Core reference tables ----------
 
@@ -32,9 +33,17 @@ class Agency(models.Model):
     class Meta:
         ordering = ["name"]
 
-    def __str__(self): return self.name
+    def __str__(self):
+        return self.name
+
     def get_absolute_url(self):
         return reverse("agency_detail", args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        # auto-generate slug if missing
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 
 class Person(models.Model):

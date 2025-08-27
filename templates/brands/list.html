@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Brands — Holograms{% endblock %}
 {% block content %}
 <h1>Brands</h1>
-<ul>
+<ul class="grid auto" style="list-style:none; padding:0;">
   {% for b in brands %}
-    <li>
-      <a href="{{ b.get_absolute_url }}">{{ b.name }}</a>
-      — {{ b.num_ads|default:0 }} ads
-      {% if b.avg_rating %} • ★ {{ b.avg_rating|floatformat:1 }}{% endif %}
+    <li class="card">
+      <h3><a href="{{ b.get_absolute_url }}">{{ b.name }}</a></h3>
+      <div class="meta">Founded work: {{ b.num_ads|default:0 }} ads{% if b.avg_rating %} • ★ {{ b.avg_rating|floatformat:1 }}{% endif %}</div>
+      {% if b.website %}<div class="meta"><a href="{{ b.website }}" target="_blank" rel="noopener">Website ↗</a></div>{% endif %}
     </li>
   {% empty %}
-    <li>No brands yet.</li>
+    <p>No brands yet.</p>
   {% endfor %}
 </ul>
 {% endblock %}
