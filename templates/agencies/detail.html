@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ agency.name }} — Holograms{% endblock %}
+{% block content %}
+<h1>{{ agency.name }}</h1>
+{% if agency.website %}<p><a href="{{ agency.website }}" target="_blank" rel="noopener">Website</a></p>{% endif %}
+{% if agency.country %}<p>Country: {{ agency.country }}</p>{% endif %}
+{% if ad.avg_rating %} — ★ {{ ad.avg_rating|floatformat:1 }}{% endif %}
+<hr>
+<h2>Ads</h2>
+<ul>
+  {% for ad in page.object_list %}
+    <li>
+      <a href="{% url 'ad_detail' ad.pk %}">{{ ad.title }}</a>
+      — {{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}
+    </li>
+  {% empty %}
+    <li>No ads credited to this agency yet.</li>
+  {% endfor %}
+</ul>
+
+{% if page.paginator.num_pages > 1 %}
+<nav>
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Prev</a>{% endif %}
+  Page {{ page.number }} of {{ page.paginator.num_pages }}
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Next →</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

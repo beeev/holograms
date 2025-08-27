@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Brands — Holograms{% endblock %}
+{% block content %}
+<h1>Brands</h1>
+<ul>
+  {% for b in brands %}
+    <li>
+      <a href="{{ b.get_absolute_url }}">{{ b.name }}</a>
+      — {{ b.num_ads|default:0 }} ads
+      {% if b.avg_rating %} • ★ {{ b.avg_rating|floatformat:1 }}{% endif %}
+    </li>
+  {% empty %}
+    <li>No brands yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

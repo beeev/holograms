@@ -1,12 +1,37 @@
-<!doctype html>
-<title>{{ ad.title }} — {{ ad.brand.name }}</title>
+{% extends "base.html" %}
+{% block title %}{{ ad.title }} — {{ ad.brand.name }}{% endblock %}
+{% block content %}
 <h1>{{ ad.title }}</h1>
-<p>{{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}</p>
-<p>Tags: {{ ad.tags }}</p>
+<p>{{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}{% if ad.agency %} — Agency: {{ ad.agency.name }}{% endif %}</p>
+<p>Rating: {% if ad.num_reviews %}★ {{ ad.avg_rating|floatformat:1 }} ({{ ad.num_reviews }}){% else %}No reviews yet{% endif %}</p>
+
 <div style="aspect-ratio:16/9;max-width:960px;">
-  <iframe width="100%" height="100%" src="{{ ad.embed_url }}" frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen>
-  </iframe>
+  <iframe width="100%" height="100%" src="{{ ad.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
-<p><a href="/ads/">← Back to list</a></p>
+
+<h2>Reviews</h2>
+{% for r in ad.reviews.all %}
+  <article>
+    <strong><a href="{% url 'profile_public' r.user.username %}">{{ r.user.username }}</a></strong>
+    <p>{{ r.body|linebreaksbr }}</p>
+    <small>{{ r.created_at }}</small>
+  </article>
+  <hr>
+{% empty %}
+  <p>No reviews yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+  <h3>{% if user_review %}Edit your review{% else %}Write a review{% endif %}</h3>
+  <form method="post" action="{% url 'review_submit' ad.pk %}">
+    {% csrf_token %}
+    <label>Rating (0–5): {{ form.rating }}</label><br>
+    <label>Thoughts:<br>{{ form.body }}</label><br>
+    <button type="submit">{% if user_review %}Update{% else %}Submit{% endif %}</button>
+  </form>
+{% else %}
+  <p><a href="/accounts/login/?next={{ request.path }}">Log in</a> to review.</p>
+{% endif %}
+
+<p><a href="{% url 'ad_list' %}">← Back to list</a></p>
+{% endblock %}

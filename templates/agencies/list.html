@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Agencies — Holograms{% endblock %}
+{% block content %}
+<h1>Agencies</h1>
+<ul>
+  {% for a in agencies %}
+    <li><a href="{{ a.get_absolute_url }}">{{ a.name }}</a>{% if a.country %} — {{ a.country }}{% endif %}</li>
+  {% empty %}
+    <li>No agencies yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

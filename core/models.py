@@ -1,31 +1,37 @@
 # core/models.py
 from django.db import models
+from django.conf import settings
+from django.urls import reverse
 
 # ---------- Core reference tables ----------
 
 class Brand(models.Model):
     name = models.CharField(max_length=200, unique=True)
     website = models.URLField(blank=True)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["name"]
 
-    def __str__(self) -> str:
-        return self.name
+    def __str__(self): return self.name
+    def get_absolute_url(self):
+        return reverse("brand_detail", args=[self.slug])
 
 
 class Agency(models.Model):
     name = models.CharField(max_length=200, unique=True)
     website = models.URLField(blank=True)
-    country = models.CharField(max_length=120, blank=True)  # keep optional for now
+    country = models.CharField(max_length=120, blank=True)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["name"]
 
-    def __str__(self) -> str:
-        return self.name
+    def __str__(self): return self.name
+    def get_absolute_url(self):
+        return reverse("agency_detail", args=[self.slug])
 
 
 class Person(models.Model):
@@ -91,3 +97,33 @@ class Credit(models.Model):
 
     def __str__(self) -> str:
         return f"{self.person.name} · {self.get_role_display()} · {self.ad.title}"
+    
+
+class Review(models.Model):
+    ad = models.ForeignKey("Ad", on_delete=models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.PositiveSmallIntegerField(default=0)  # 0–5
+    body = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = [("ad", "user")]
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.user} → {self.ad} ({self.rating})"
+    
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    display_name = models.CharField(max_length=120, blank=True)
+    city = models.CharField(max_length=120, blank=True)
+    bio = models.TextField(blank=True)
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)  # needs MEDIA config
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    def get_absolute_url(self):
+        return reverse("profile_public", args=[self.user.username])
+
+    def __str__(self) -> str:
+        return self.display_name or self.user.username

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{% block title %}Holograms{% endblock %}</title>
+  </head>
+  <body>
+    <header>
+        <a href="/ads/">Holograms</a>
+{% if user.is_authenticated %}
+  • Hello, {{ user.username }}
+  — <a href="{% url 'profile_public' user.username %}">My profile</a>
+  — <a href="{% url 'profile_edit' %}">Edit profile</a>
+  — <a href="{% url 'logout' %}">Log out</a>
+{% else %}
+  • <a href="{% url 'login' %}">Log in</a>
+  • <a href="{% url 'signup' %}">Sign up</a>
+{% endif %}
+    
+      <hr>
+    </header>
+
+    {% if messages %}
+      <ul>
+        {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </body>
+</html>

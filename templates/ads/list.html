@@ -1,13 +1,16 @@
-<!doctype html>
-<title>Ads</title>
+{% extends "base.html" %}
+{% block title %}Ads — Holograms{% endblock %}
+{% block content %}
 <h1>Recent Ads</h1>
 <ul>
   {% for ad in ads %}
     <li>
       <a href="{% url 'ad_detail' ad.pk %}">{{ ad.title }}</a>
       — {{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}
+      {% if ad.num_reviews %} — ★ {{ ad.avg_rating|floatformat:1 }} ({{ ad.num_reviews }}){% endif %}
     </li>
   {% empty %}
     <li>No ads yet.</li>
   {% endfor %}
 </ul>
+{% endblock %}

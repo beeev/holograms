@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.profile.display_name|default:profile_user.username }} — Profile{% endblock %}
+{% block content %}
+<h1>
+  {% if profile_user.profile.avatar %}
+    <img src="{{ profile_user.profile.avatar.url }}" alt="" style="height:48px;width:48px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:8px;">
+  {% endif %}
+  {{ profile_user.profile.display_name|default:profile_user.username }}
+</h1>
+
+{% if profile_user.profile.city %}<p>City: {{ profile_user.profile.city }}</p>{% endif %}
+{% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio|linebreaksbr }}</p>{% endif %}
+
+<hr>
+<h2>Recent reviews</h2>
+{% if reviews %}
+  <ul>
+    {% for r in reviews %}
+      <li>
+        ★ {{ r.rating }} — 
+        <a href="{% url 'ad_detail' r.ad.pk %}">{{ r.ad.title }}</a>
+        — {{ r.ad.brand.name }}
+        {% if r.ad.year %}({{ r.ad.year }}){% endif %}
+        <br>
+        <small>{{ r.created_at }}</small>
+        {% if r.body %}<p>{{ r.body|linebreaksbr }}</p>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No reviews yet.</p>
+{% endif %}
+{% endblock %}
