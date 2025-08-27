@@ -2,6 +2,9 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.core.exceptions import ValidationError
+from datetime import date
+from .utils import extract_youtube_id
 
 # ---------- Core reference tables ----------
 
@@ -48,6 +51,11 @@ class Person(models.Model):
 
 # ---------- Ads & interactions ----------
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=60, unique=True, blank=True)
+    def __str__(self): return self.name
+
 class Ad(models.Model):
     title = models.CharField(max_length=255)
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name="ads")
@@ -58,7 +66,40 @@ class Ad(models.Model):
     youtube_id = models.CharField(max_length=20, unique=True, db_index=True, editable=False)
     duration_sec = models.PositiveIntegerField(null=True, blank=True)
     tags = models.CharField(max_length=250, blank=True, help_text="Comma-separated")
+    tags_m2m = models.ManyToManyField(Tag, blank=True, related_name="ads")
     created_at = models.DateTimeField(auto_now_add=True)
+    def clean(self):
+        # Year sanity
+        if self.year and (self.year < 1900 or self.year > date.today().year + 1):
+            raise ValidationError({"year": "Year looks out of range."})
+
+        # Normalise YouTube and enforce uniqueness at the form/ORM level
+        yt_input = (self.youtube_url or "").strip()
+        yt_id = extract_youtube_id(yt_input)
+        if not yt_id:
+            raise ValidationError({"youtube_url": "Please enter a valid YouTube URL or ID."})
+
+        self.youtube_id = yt_id  # ensure the unique field is populated
+
+        # Optional: keep youtube_url as a canonical watch url
+        self.youtube_url = f"https://www.youtube.com/watch?v={yt_id}"
+
+        # Check for duplicates in DB (exclude self when editing)
+        qs = Ad.objects.filter(youtube_id=yt_id)
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+        if qs.exists():
+            raise ValidationError({"youtube_url": "This YouTube video is already in Holograms."})
+
+    def save(self, *args, **kwargs):
+        # Belt-and-braces: ensure youtube_id is set before saving
+        if not self.youtube_id:
+            yt_id = extract_youtube_id((self.youtube_url or "").strip())
+            if yt_id:
+                self.youtube_id = yt_id
+                # keep canonical form
+                self.youtube_url = f"https://www.youtube.com/watch?v={yt_id}"
+        super().save(*args, **kwargs)
 
     class Meta:
         indexes = [
@@ -127,3 +168,4 @@ class UserProfile(models.Model):
 
     def __str__(self) -> str:
         return self.display_name or self.user.username
+    

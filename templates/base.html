@@ -16,6 +16,9 @@
   • <a href="{% url 'login' %}">Log in</a>
   • <a href="{% url 'signup' %}">Sign up</a>
 {% endif %}
+<form method="get" action="{% url 'search' %}" style="display:inline;">
+  <input name="q" placeholder="Search…" size="12">
+</form>
     
       <hr>
     </header>

@@ -8,6 +8,11 @@
 <div style="aspect-ratio:16/9;max-width:960px;">
   <iframe width="100%" height="100%" src="{{ ad.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
+<p>Tags:
+{% for t in ad.tags_m2m.all %}
+  <a href="{% url 'search' %}?tag={{ t.slug }}">{{ t.name }}</a>
+{% empty %}—{% endfor %}
+</p>
 
 <h2>Reviews</h2>
 {% for r in ad.reviews.all %}

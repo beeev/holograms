@@ -2,15 +2,25 @@ import csv
 from pathlib import Path
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
-from core.models import Brand, Agency, Ad
+from django.utils.text import slugify
+
+from core.models import Brand, Agency, Ad, Tag
 from core.utils import extract_youtube_id
+
 
 class Command(BaseCommand):
     help = "Import Ads from a CSV file."
 
     def add_arguments(self, parser):
         parser.add_argument("csv_path", type=str, help="Path to CSV file")
-        parser.add_argument("--dry-run", action="store_true", help="Validate without writing to DB")
+        parser.add_argument(
+            "--dry-run", action="store_true",
+            help="Validate without writing to DB",
+        )
+        parser.add_argument(
+            "--append-tags", action="store_true",
+            help="Append tags from CSV instead of replacing existing tags on the Ad",
+        )
 
     def handle(self, *args, **options):
         path = Path(options["csv_path"]).expanduser()
@@ -19,16 +29,15 @@ class Command(BaseCommand):
 
         created = updated = skipped = 0
 
-        # Open with utf-8-sig to strip BOM if present
+        # --- Read & normalise CSV headers/rows (robust to BOM & blank headers)
         with path.open(encoding="utf-8-sig", newline="") as fh:
             reader = csv.DictReader(fh)
-
             raw_fields = reader.fieldnames or []
             norm_fields = [(c or "").strip().lower() for c in raw_fields]
             keymap = {orig: norm for orig, norm in zip(raw_fields, norm_fields)}
 
-            required_cols = {"title", "brand", "youtube"}
-            missing = required_cols - set(norm_fields)
+            required = {"title", "brand", "youtube"}
+            missing = required - set(norm_fields)
             if missing:
                 raise CommandError(f"CSV missing required columns: {', '.join(sorted(missing))}")
 
@@ -38,9 +47,24 @@ class Command(BaseCommand):
                 for k, v in raw.items():
                     norm = keymap.get(k, "").strip().lower()
                     if not norm:
-                        continue  # skip columns with empty/None header
+                        continue
                     row[norm] = (v or "").strip()
                 rows.append(row)
+
+        def _split_tags(tags_str: str) -> list[str]:
+            if not tags_str:
+                return []
+            # split on commas, ignore empties, de-dup while preserving order
+            seen, out = set(), []
+            for piece in tags_str.split(","):
+                name = piece.strip()
+                if not name:
+                    continue
+                if name.lower() in seen:
+                    continue
+                seen.add(name.lower())
+                out.append(name)
+            return out
 
         @transaction.atomic
         def _run():
@@ -59,7 +83,8 @@ class Command(BaseCommand):
                 youtube = val("youtube", "youtube_url", "url", "video", "link")
                 year = val("year")
                 duration = val("duration_sec", "duration")
-                tags = val("tags")
+                tags_str = val("tags")  # ← CSV column for tags
+                tag_names = _split_tags(tags_str)
 
                 if not title or not brand_name or not youtube:
                     self.stderr.write(f"[line {i}] missing title/brand/youtube → skipped")
@@ -74,13 +99,13 @@ class Command(BaseCommand):
 
                 brand, _ = Brand.objects.get_or_create(
                     name=brand_name,
-                    defaults={"slug": brand_name.lower().replace(" ", "-")},
+                    defaults={"slug": slugify(brand_name)},
                 )
                 agency = None
                 if agency_name:
                     agency, _ = Agency.objects.get_or_create(
                         name=agency_name,
-                        defaults={"slug": agency_name.lower().replace(" ", "-")},
+                        defaults={"slug": slugify(agency_name)},
                     )
 
                 defaults = {
@@ -89,17 +114,26 @@ class Command(BaseCommand):
                     "agency": agency,
                     "year": int(year) if year.isdigit() else None,
                     "duration_sec": int(duration) if duration.isdigit() else None,
-                    "tags": tags,
+                    "tags": tags_str,  # keep your legacy CharField if you still have it; harmless otherwise
                     "youtube_url": youtube,
                 }
 
                 ad, was_created = Ad.objects.update_or_create(
                     youtube_id=yt_id, defaults=defaults
                 )
-                if was_created:
-                    created += 1
-                else:
-                    updated += 1
+                created += 1 if was_created else 0
+                updated += 0 if was_created else 1
+
+                # --- Tags (M2M) ---
+                if tag_names:
+                    if not options.get("append-tags"):
+                        ad.tags.clear()  # replace mode (default)
+                    for name in tag_names:
+                        tag, _ = Tag.objects.get_or_create(
+                            slug=slugify(name),
+                            defaults={"name": name},
+                        )
+                        ad.tags_m2m.add(tag)
 
         if options.get("dry_run"):
             try:

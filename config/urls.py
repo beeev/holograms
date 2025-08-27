@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from core.api import health
-from core.views import ad_list, ad_detail, review_submit, signup, profile_edit, profile_public,brand_list, brand_detail, agency_list, agency_detail
+from core.views import ad_list, ad_detail, review_submit, signup, profile_edit, profile_public,brand_list, brand_detail, agency_list, agency_detail, search
 
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path("accounts/signup/", signup, name="signup"),
     path("accounts/profile/", profile_edit, name="profile_edit"),
     path("u/<str:username>/", profile_public, name="profile_public"),
+    path("search/", search, name="search"),
 
     path("brands/", brand_list, name="brand_list"),
     path("brands/<slug:slug>/", brand_detail, name="brand_detail"),

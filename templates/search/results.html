@@ -1,0 +1,29 @@
+<!-- templates/search/results.html -->
+{% extends "base.html" %}
+{% block content %}
+<form method="get" action="{% url 'search' %}">
+  <input name="q" placeholder="Search ads, brands, agencies" value="{{ q|default:'' }}">
+  <select name="tag">
+    <option value="">All tags</option>
+    {% for t in tags %}
+      <option value="{{ t.slug }}" {% if tag == t.slug %}selected{% endif %}>{{ t.name }}</option>
+    {% endfor %}
+  </select>
+  <input name="year" size="4" placeholder="Year" value="{{ year|default:'' }}">
+  <button type="submit">Search</button>
+</form>
+
+<ul>
+  {% for ad in page.object_list %}
+    <li><a href="{% url 'ad_detail' ad.pk %}">{{ ad.title }}</a> — {{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}</li>
+  {% empty %}<li>No results.</li>{% endfor %}
+</ul>
+
+{% if page.paginator.num_pages > 1 %}
+  <nav>
+    {% if page.has_previous %}<a href="?q={{ q }}&tag={{ tag }}&year={{ year }}&page={{ page.previous_page_number }}">← Prev</a>{% endif %}
+    Page {{ page.number }} of {{ page.paginator.num_pages }}
+    {% if page.has_next %}<a href="?q={{ q }}&tag={{ tag }}&year={{ year }}&page={{ page.next_page_number }}">Next →</a>{% endif %}
+  </nav>
+{% endif %}
+{% endblock %}

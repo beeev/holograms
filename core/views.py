@@ -1,10 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Count, Prefetch
+from django.db.models import Avg, Count, Prefetch, Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import ReviewForm, UserCreationForm, UserProfileForm
-from .models import Ad, Review, Brand, Agency
+from .models import Ad, Review, Brand, Agency, Tag
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
@@ -129,3 +129,21 @@ def agency_detail(request, slug: str):
           .order_by("-year", "title"))
     page = Paginator(qs, 24).get_page(request.GET.get("page"))
     return render(request, "agencies/detail.html", {"agency": agency, "page": page})
+
+def search(request):
+    q = (request.GET.get("q") or "").strip()
+    tag = request.GET.get("tag") or ""
+    year = request.GET.get("year") or ""
+    qs = (Ad.objects.select_related("brand","agency")
+          .prefetch_related("tags_m2m")
+          .order_by("-year","title"))
+    if q:
+        qs = qs.filter(Q(title__icontains=q) | Q(brand__name__icontains=q) | Q(agency__name__icontains=q))
+    if tag:
+        qs = qs.filter(tags_m2m__slug=tag)
+    if year.isdigit():
+        qs = qs.filter(year=int(year))
+    page = Paginator(qs.distinct(), 24).get_page(request.GET.get("page"))
+    return render(request, "search/results.html", {
+        "page": page, "q": q, "tag": tag, "year": year, "tags": Tag.objects.order_by("name"),
+    })
