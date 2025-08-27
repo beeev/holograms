@@ -47,16 +47,6 @@ class Agency(models.Model):
         super().save(*args, **kwargs)
 
 
-class Person(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-    website = models.URLField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self) -> str:
-        return self.name
 
 
 # ---------- Ads & interactions ----------
@@ -138,16 +128,18 @@ ROLE_CHOICES = [
 ]
 
 class Credit(models.Model):
-    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name="credits")
-    person = models.ForeignKey(Person, on_delete=models.PROTECT, related_name="credits")
+    ad = models.ForeignKey('Ad', on_delete=models.CASCADE, related_name='credits')
+    person = models.ForeignKey('core.Person', on_delete=models.PROTECT, related_name='ad_credits')
     role = models.CharField(max_length=24, choices=ROLE_CHOICES)
     company = models.ForeignKey(Agency, on_delete=models.PROTECT,
-                                null=True, blank=True, related_name="credits")  # optional: where they sat
+                                null=True, blank=True, related_name='credits')
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = [("ad", "person", "role")]  # avoids exact duplicate credits
-        ordering = ["ad_id", "role", "person__name"]
+        constraints = [
+            models.UniqueConstraint(fields=['ad', 'person', 'role'], name='uniq_ad_person_role'),
+        ]
+        ordering = ['ad_id', 'role', 'person__name']
 
     def __str__(self) -> str:
         return f"{self.person.name} · {self.get_role_display()} · {self.ad.title}"
@@ -180,4 +172,41 @@ class UserProfile(models.Model):
 
     def __str__(self) -> str:
         return self.display_name or self.user.username
+    
+
+
+# --- People ---
+class Person(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    website = models.URLField(blank=True)
+    twitter = models.URLField(blank=True)
+    instagram = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self): return self.name
+    def get_absolute_url(self): return reverse("person_detail", args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+# A small, editable set of roles; keep simple for now.
+class AdRole(models.TextChoices):
+    DIRECTOR = "director", "Director"
+    CREATIVE_DIRECTOR = "creative_director", "Creative Director"
+    ART_DIRECTOR = "art_director", "Art Director"
+    COPYWRITER = "copywriter", "Copywriter"
+    PRODUCER = "producer", "Producer"
+    EDITOR = "editor", "Editor"
+    DOP = "dop", "Director of Photography"
+    COMPOSER = "composer", "Composer"
+    OTHER = "other", "Other"
+
+
     
