@@ -1,3 +1,16 @@
-title,brand,agency,year,youtube,duration_sec,tags
-The Epic Split,Volvo Trucks,Forsman & Bodenfors,2013,https://youtu.be/M7FIvfx5J10,60,stunt, truck,jean-claude
-Guinness Surfer,Guinness,AMV BBDO,1999,https://youtu.be/zcdDg30VBgo,90,classic, black and white, horses
+title;brand;agency;year;youtube;duration_sec;tags;;
+The Epic Split;Volvo Trucks;Forsman & Bodenfors;2013;https://youtu.be/M7FIvfx5J10;60;stunt; truck;jean-claude
+Guinness Surfer;Guinness;AMV BBDO;1999;https://youtu.be/zcdDg30VBgo;90;classic; black and white; horses
+The Quarrel;Guinness;;;https://www.youtube.com/watch?v=mSh1NNp0q5Q;;Beer;British;
+Garage;Cadbury;VCCP;2023;https://youtu.be/JHEJfRnWyBM?si=VoEibfMHRc60vbhX;;FMCG;Chocolate;
+Better on a Better Mobile Network;Telstra;TBWA;2024;https://www.youtube.com/watch?v=7FCJNnSAnK8;;Services;Olympics;Case Studies
+The Knit Before Christmas;;Aardman;2024;https://youtu.be/his5540T-kM?si=HXhqjH0GRvj5zLON;;Christmas;Charity;
+Mum’s Birthday;Cadbury;VCCP;;https://youtu.be/TfMt3HN8tuY?si=2k4a9WS2aB4Alzwo;;FMCG;Chocolate;
+The Code;Dove;;2024;https://www.youtube.com/watch?v=sD-R2OzcleQ;;FMCQ;Beauty;AI
+Jam Packed With Mischief;Jammie Dodgers;;2024;https://www.youtube.com/watch?v=eUmqIodXCvM;;FMCQ;Food;Family
+May We Haveth One’s Attention;British Airways;Uncommon;2024;https://www.youtube.com/watch?v=ssVe0FaBhUU;;Travel;Safety;
+Yours for 200 years;Cadbury;VCCP;2024;https://www.youtube.com/watch?v=2eO8VNjYqRM;;Food;Chocolate;
+Nothing Satisfies like a Pot Noodle;Pot Noodle;Adam&EveDDB;;https://www.youtube.com/watch?v=sBw6VHyPo0Q&embeds_referring_euri=https://www.marketing-beat.co.uk/&source_ve_path=MjM4NTE;;Food;Disgusting;
+Mannshaft;Barrs;;2024;https://www.youtube.com/watch?v=H4JEFd5CZlQ;;Beverage;Football;
+Disney;Adam&EveDDB;;2024;https://www.youtube.com/watch?v=_1nez6_1TXY;;Christmas;;
+Banking with the enemy;Santander;;2024;https://youtu.be/fdLFIkbaRgw?si=FMH7dtcZ91OL2kQf;;Finance;;

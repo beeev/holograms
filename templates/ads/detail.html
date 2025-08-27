@@ -5,9 +5,20 @@
 <p>{{ ad.brand.name }}{% if ad.year %} ({{ ad.year }}){% endif %}{% if ad.agency %} — Agency: {{ ad.agency.name }}{% endif %}</p>
 <p>Rating: {% if ad.num_reviews %}★ {{ ad.avg_rating|floatformat:1 }} ({{ ad.num_reviews }}){% else %}No reviews yet{% endif %}</p>
 
-<div style="aspect-ratio:16/9;max-width:960px;">
-  <iframe width="100%" height="100%" src="{{ ad.embed_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
+{% if ad.youtube_id %}
+  <div class="video-16x9">
+    <iframe
+      src="https://www.youtube-nocookie.com/embed/{{ ad.youtube_id }}?rel=0"
+      title="{{ ad.title|escape }}"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen>
+    </iframe>
+  </div>
+{% else %}
+  <p><em>No video ID found.</em></p>
+{% endif %}
 <p>Tags:
 {% for t in ad.tags_m2m.all %}
   <a href="{% url 'search' %}?tag={{ t.slug }}">{{ t.name }}</a>
