@@ -22,8 +22,7 @@
     </nav>
     <div style="margin-left:auto">
       {% if user.is_authenticated %}
-        <a href="{% url 'profile_edit' %}">Profile</a> · <a href="{% url 'logout' %}">Log out</a>
-      {% else %}
+<a href="{% url 'profile_public' request.user.username %}">Profile</a> · <a href="{% url 'logout' %}">Log out</a>      {% else %}
         <a href="{% url 'login' %}">Log in</a> · <a href="{% url 'signup' %}">Sign up</a>
       {% endif %}
     </div>

@@ -1,33 +1,50 @@
 {% extends "base.html" %}
-{% block title %}{{ profile_user.profile.display_name|default:profile_user.username }} — Profile{% endblock %}
+{% load humanize %}
+
+{% block title %}{{ profile.display_name|default:profile_user.username }} · Holograms{% endblock %}
+
 {% block content %}
-<h1>
-  {% if profile_user.profile.avatar %}
-    <img src="{{ profile_user.profile.avatar.url }}" alt="" style="height:48px;width:48px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:8px;">
+<div class="ad-card" style="display:flex; gap:16px; align-items:flex-start;">
+  {% if profile and profile.avatar %}
+    <img src="{{ profile.avatar.url }}" alt="" width="80" height="80" style="border-radius:50%; object-fit:cover;">
+  {% else %}
+    <div style="width:80px; height:80px; border-radius:50%; background:#ddd; display:flex; align-items:center; justify-content:center; font-weight:600;">
+      {{ profile_user.username|slice:":1"|upper }}
+    </div>
   {% endif %}
-  {{ profile_user.profile.display_name|default:profile_user.username }}
-</h1>
 
-{% if profile_user.profile.city %}<p>City: {{ profile_user.profile.city }}</p>{% endif %}
-{% if profile_user.profile.bio %}<p>{{ profile_user.profile.bio|linebreaksbr }}</p>{% endif %}
+  <div>
+    <h1 style="margin:0;">
+      {{ profile.display_name|default:profile_user.username }}
+    </h1>
+    <p class="meta" style="margin-top:4px;">
+      {% if profile and profile.city %}{{ profile.city }} • {% endif %}
+      {{ stats.num_reviews }} review{{ stats.num_reviews|pluralize }}
+      {% if request.user == profile_user %} • <a href="{% url 'profile_edit' %}">Edit profile</a>{% endif %}
+    </p>
+    {% if profile and profile.bio %}
+      <p style="margin-top:8px; white-space:pre-line;">{{ profile.bio }}</p>
+    {% endif %}
+  </div>
+</div>
 
-<hr>
-<h2>Recent reviews</h2>
-{% if reviews %}
-  <ul>
-    {% for r in reviews %}
-      <li>
-        ★ {{ r.rating }} — 
-        <a href="{% url 'ad_detail' r.ad.pk %}">{{ r.ad.title }}</a>
-        — {{ r.ad.brand.name }}
-        {% if r.ad.year %}({{ r.ad.year }}){% endif %}
-        <br>
-        <small>{{ r.created_at }}</small>
-        {% if r.body %}<p>{{ r.body|linebreaksbr }}</p>{% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No reviews yet.</p>
-{% endif %}
+<h2 style="margin:16px 0 8px;">Recent reviews</h2>
+
+<ul class="grid" style="list-style:none; padding:0; gap:12px;">
+  {% for r in page.object_list %}
+    <li class="ad-card">
+      <div class="meta" style="margin-bottom:6px;">
+        <strong>★ {{ r.rating }}</strong> — 
+        <a href="{{ r.ad.get_absolute_url }}">{{ r.ad.title }}</a> — 
+        {{ r.ad.brand.name }}{% if r.ad.year %} ({{ r.ad.year }}){% endif %}
+      </div>
+      {% if r.body %}<div>{{ r.body|linebreaksbr }}</div>{% endif %}
+      <div class="meta" style="margin-top:6px;">{{ r.created_at|naturaltime }}</div>
+    </li>
+  {% empty %}
+    <li class="meta">No reviews yet.</li>
+  {% endfor %}
+</ul>
+
+{% include "partials/pagination.html" with page=page %}
 {% endblock %}

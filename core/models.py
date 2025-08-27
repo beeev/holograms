@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from datetime import date
 from .utils import extract_youtube_id
 from django.utils.text import slugify
+from django.utils import timezone
 
 # ---------- Core reference tables ----------
 
@@ -120,6 +121,9 @@ class Ad(models.Model):
     def __str__(self) -> str:
         return f"{self.title} — {self.brand.name}"
 
+    def get_absolute_url(self):
+        return reverse("ad_detail", args=[self.pk])
+
 
 ROLE_CHOICES = [
     ("CD", "Creative Director"),
@@ -150,16 +154,15 @@ class Credit(models.Model):
     
 
 class Review(models.Model):
-    ad = models.ForeignKey("Ad", on_delete=models.CASCADE, related_name="reviews")
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name="reviews")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews")
-    rating = models.PositiveSmallIntegerField(default=0)  # 0–5
+    rating = models.PositiveSmallIntegerField()  # 0..5
     body = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)   # set once on insert
+    updated_at = models.DateTimeField(auto_now=True)       # refreshed on every save
 
     class Meta:
-        unique_together = [("ad", "user")]
-        ordering = ["-created_at"]
+        unique_together = ("ad", "user")  # one review per user per ad
 
     def __str__(self) -> str:
         return f"{self.user} → {self.ad} ({self.rating})"
